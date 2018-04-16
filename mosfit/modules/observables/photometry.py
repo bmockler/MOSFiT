@@ -205,8 +205,10 @@ class Photometry(Module):
                                     ' '.join([str(y) for y in x])
                                     for x in vo_dat
                                 ])
-                                with open_atomic(path, 'w') as f:
-                                    f.write(vo_string)
+                                if (not self._model._fitter._prefer_cache or
+                                        not os.path.exists(path)):
+                                    with open_atomic(path, 'w') as f:
+                                        f.write(vo_string)
                         else:
                             raise RuntimeError(
                                 prt.string('cant_read_svo'))
