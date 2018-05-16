@@ -99,6 +99,13 @@ def get_parser(only=None, printer=None):
         help=prt.text('parser_limiting_magnitude'))
 
     parser.add_argument(
+        '--prefer-fluxes',
+        dest='prefer_fluxes',
+        default=False,
+        action='store_true',
+        help=prt.text('parser_prefer_fluxes'))
+
+    parser.add_argument(
         '--time-list',
         '--extra-times',
         dest='time_list',
@@ -407,6 +414,12 @@ def get_parser(only=None, printer=None):
         type=float,
         default=np.inf,
         help=prt.text('parser_maximum_memory'))
+
+    parser.add_argument(
+        '--seed',
+        dest='seed',
+        type=int,
+        help=prt.text('parser_seed'))
 
     parser.add_argument(
         '--draw-above-likelihood',
