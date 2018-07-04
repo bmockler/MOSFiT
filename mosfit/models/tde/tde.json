@@ -81,7 +81,8 @@
             "b",
             "efficiency",
             "texplosion",
-            "starmass"
+            "starmass",
+            "ranomaly"
         ]
     },
     "viscous":{
