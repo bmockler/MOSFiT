@@ -3,6 +3,10 @@
         "min_value":0.01,
         "max_value":100
     },
+    "ranomaly":{
+        "min_value":0,
+        "max_value":1
+    },
     "Tviscous":{
         "min_value":1.0e-3,
         "max_value":1.0e5,

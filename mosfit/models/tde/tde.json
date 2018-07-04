@@ -4,6 +4,11 @@
         "value": 1,
         "class":"kroupa"
     },
+    "ranomaly":{
+        "kind": "parameter",
+        "value": 0.5,
+        "class":"parameter"
+    },
     "ebv":{
         "kind":"parameter",
         "value":0.0,
