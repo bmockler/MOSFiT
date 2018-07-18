@@ -194,11 +194,25 @@ class Fallback(Engine):
                 dmdt['lo'] = np.copy(dmdt['hi'])
 
         # Read in BD end of M-R relation
-        BDfilename = (os.path.dirname(__file__)[:-15] + 'models/tde/data/' +
-                      'BD_M-R_Burrows11.txt')
+        #BDfilename = (os.path.dirname(__file__)[:-15] + 'models/tde/data/' +
+        #              'BD_M-R_Burrows11.txt')
         # self._BD_m, self._BD_r = np.loadtxt(BDfilename, skiprows=15)
-        m, r = np.loadtxt(BDfilename, skiprows=15)
-        self._BD_MR_function = interp1d(m, r)
+        #m, r = np.loadtxt(BDfilename, skiprows=15)
+        #self._BD_MR_function = interp1d(m, r)
+
+        # load in data for min and max radius as a function of mass
+        # dependent on composition, age
+        # calculated from Burrows '11 and MIST
+
+        m, rmin = np.loadtxt(os.path.dirname(__file__)[:-15] +
+                             'models/tde/data/' +
+                             'M-R_min_Burrows11+MIST.txt')
+        # have the same m array, just read over it
+        m, rmax = np.loadtxt(os.path.dirname(__file__)[:-15] +
+                             'models/tde/data/' +
+                             'M-R_max_Burrows11+MIST.txt')
+        self._R_min_function = interp1d(m, rmin)
+        self._R_max_function = interp1d(m, rmax)
 
     def process(self, **kwargs):
         """Process module."""
@@ -436,6 +450,7 @@ class Fallback(Engine):
         # dmdt ~ Mh^(-1/2)
         self._Mh = kwargs['bhmass']  # in units of solar masses
 
+        """
         # Use Burrows et al. relationships for solar metallicity
         # 3-5 Gyr BDs (Figure 3)
         if self._Mstar < 0.01:
@@ -489,6 +504,12 @@ class Fallback(Engine):
                      (Tout_nu + Tout_eps * Mstar_Tout ** 2 + Tout_o *
                       Mstar_Tout ** 8.5 + Mstar_Tout ** 18.5 + Tout_pi *
                       Mstar_Tout ** 19.5))
+            """
+
+        self._ranomaly = kwargs['ranomaly']
+        Rstar = (self._R_min_function(self._Mstar) + self._ranomaly *
+                 (self._R_max_function(self._Mstar) -
+                  self._R_min_function(self._Mstar)))
 
         dmdt = (dmdt * np.sqrt(Mhbase / self._Mh) *
                 (self._Mstar / Mstarbase) ** 2.0 * (Rstarbase / Rstar) ** 1.5)
