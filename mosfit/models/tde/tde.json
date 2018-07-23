@@ -53,7 +53,7 @@
     "bhmass":{
         "kind":"parameter",
         "value":1.78e7,
-        "class":"parameter",
+        "class":"shankar",
         "latex":"M_{h} (M_{\\odot})"
     },
     "Rph0":{

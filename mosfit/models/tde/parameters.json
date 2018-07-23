@@ -19,8 +19,7 @@
     },
     "bhmass":{
         "min_value":1.0e5,
-        "max_value":5.0e8,
-        "log":true
+        "max_value":5.0e8
     },
     "efficiency":{
         "min_value":0.0001,
