@@ -1,4 +1,4 @@
-''' 	        Mass-Radius relationship for brown dwarfs between 0.008<= x <0.102 solar masses. 
+''' 	Mass-Radius relationship for brown dwarfs between 0.008<= x <0.102 solar masses. 
 		First row is mass, second row is radius. 
 		The right end of the function matches up with Tout et al. 1996 relation for solar 
 		metallicity stars. 

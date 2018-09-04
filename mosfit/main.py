@@ -224,6 +224,14 @@ def get_parser(only=None, printer=None):
         help=prt.text('parser_user_fixed_parameters'))
 
     parser.add_argument(
+        '--release-parameters',
+        '-r',
+        dest='user_released_parameters',
+        default=[],
+        nargs='+',
+        help=prt.text('parser_user_released_parameters'))
+
+    parser.add_argument(
         '--iterations',
         '-i',
         dest='iterations',
@@ -502,8 +510,8 @@ def get_parser(only=None, printer=None):
         '--extra-outputs',
         '-x',
         dest='extra_outputs',
-        default=[],
-        nargs='+',
+        default=None,
+        nargs='*',
         help=prt.text('parser_extra_outputs'))
 
     parser.add_argument(
@@ -613,43 +621,46 @@ def main():
         prt.message('enabling_s')
         args.smooth_times = 0
 
-    changed_iterations = False
+    args.method = 'nester' if args.method.lower() in [
+        'nest', 'nested', 'nested_sampler', 'nester'] else 'ensembler'
+
+    if is_master():
+        if args.method == 'nester':
+            unused_args = [
+                [args.burn, '-b'],
+                [args.post_burn, '-p'],
+                [args.frack_step, '-f'],
+                [args.num_temps, '-T'],
+                [args.run_until_uncorrelated, '-U'],
+                [args.draw_above_likelihood, '-d'],
+                [args.gibbs, '-g'],
+                [args.save_full_chain, '-c'],
+                [args.maximum_memory, '-M']
+            ]
+            for ua in unused_args:
+                if ua[0] is not None:
+                    prt.message('argument_not_used',
+                                reps=[ua[1], '-D nester'], warning=True)
+
+    if args.method == 'nester':
+        if args.run_until_converged and args.iterations >= 0:
+            raise ValueError(prt.text('R_i_mutually_exclusive'))
+        if args.walker_paths is not None:
+            raise ValueError(prt.text('w_nester_mutually_exclusive'))
+
+    if args.generative:
+        if args.iterations > 0:
+            prt.message('generative_supercedes', warning=True)
+        args.iterations = 0
+
+    no_events = False
+
     if args.iterations == -1:
         if len(args.events) == 0:
             changed_iterations = True
             args.iterations = 0
         else:
             args.iterations = 5000
-
-    if len(args.date_list):
-        if changed_iterations:
-            prt.message('no_dates_gen', warning=True)
-        else:
-            args.time_list = [str(astrotime(x.replace('/', '-')).mjd)
-                              for x in args.date_list]
-            args.time_unit = 'mjd'
-
-    if len(args.mjd_list):
-        if changed_iterations:
-            prt.message('no_dates_gen', warning=True)
-        else:
-            args.time_list = args.mjd_list
-            args.time_unit = 'mjd'
-
-    if len(args.jd_list):
-        if changed_iterations:
-            prt.message('no_dates_gen', warning=True)
-        else:
-            args.time_list = [str(astrotime(
-                float(x), format='jd').mjd) for x in args.jd_list]
-            args.time_unit = 'mjd'
-
-    if len(args.phase_list):
-        if changed_iterations:
-            prt.message('no_dates_gen', warning=True)
-        else:
-            args.time_list = args.phase_list
-            args.time_unit = 'phase'
 
     if len(args.time_list):
         if any([any([y in x]) for y in ['-', '/'] for x in args.time_list]):
@@ -667,6 +678,37 @@ def main():
                 args.time_unit = 'phase'
             args.time_list = [float(x) for x in args.time_list]
 
+    if len(args.date_list):
+        if no_events:
+            prt.message('no_dates_gen', warning=True)
+        else:
+            args.time_list += [str(astrotime(x.replace('/', '-')).mjd)
+                               for x in args.date_list]
+            args.time_unit = 'mjd'
+
+    if len(args.mjd_list):
+        if no_events:
+            prt.message('no_dates_gen', warning=True)
+        else:
+            args.time_list += [float(x) for x in args.mjd_list]
+            args.time_unit = 'mjd'
+
+    if len(args.jd_list):
+        if no_events:
+            prt.message('no_dates_gen', warning=True)
+        else:
+            args.time_list += [str(astrotime(
+                float(x), format='jd').mjd) for x in args.jd_list]
+            args.time_unit = 'mjd'
+
+    if len(args.phase_list):
+        if no_events:
+            prt.message('no_dates_gen', warning=True)
+        else:
+            args.time_list += [float(x) for x in args.phase_list]
+            args.time_unit = 'phase'
+
+    if len(args.time_list):
         if min(args.time_list) > 2400000:
             prt.message('assuming_jd')
             args.time_list = [x - 2400000.5 for x in args.time_list]
@@ -674,7 +716,6 @@ def main():
         elif min(args.time_list) > 50000:
             prt.message('assuming_mjd')
             args.time_unit = 'mjd'
-        args.time_unit = None
 
     if args.burn is None and args.post_burn is None:
         args.burn = int(np.floor(args.iterations / 2))

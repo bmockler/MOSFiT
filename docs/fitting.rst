@@ -137,9 +137,9 @@ All :ref:`convergence <convergence>` metrics are computed *after* the burn-in ph
 Nested sampling
 ===============
 
-For complicated posteriors with multiple modes or for problems of high dimension (ten dimensions or greater), nested sampling is often a superior choice versus ensemble-based methods. In ``MOSFiT``, nested sampling is implement via the ``dynesty`` package, which uses a modern variant of nested sampling known as *dynamic* nested sampling.
+For complicated posteriors with multiple modes or for problems of high dimension (ten dimensions or greater), nested sampling is often a superior choice versus ensemble-based methods. In ``MOSFiT``, nested sampling is implement via the ``dynesty`` package, which uses a modern variant of nested sampling known as *dynamic* nested sampling (`see the full documentation for this package <http://dynesty.rtfd.io>`_).
 
-Whereas ensemble-based approaches can only estimate the information content of their posteriors via heuristic information metrics such as the WAIC (see :ref:`scoring`), nested sampling directly evaluates the evidence for a given model, and provides a (statistical) estimate of its error. Nested sampling also yields many more useful samples of the posterior for the purposes of visualizing its structure, it is not uncommon for a run to provide tens of thousands of informative samples.
+Whereas ensemble-based approaches can only estimate the information content of their posteriors via heuristic information metrics such as the WAIC (see :ref:`scoring`), nested sampling directly evaluates the evidence for a given model, and provides a (statistical) estimate of its error. Nested sampling also yields many more useful samples of the posterior for the purposes of visualizing its structure; it is not uncommon for a run to provide tens of thousands of informative samples, as compared to ensemble-based approach that may only yield a few hundred.
 
 However, nested sampling is a much more complicated algorithm than ensemble-based MCMC and thus is potentially prone to failures that can be difficult to track down. Additionally, the ``dynesty`` software currently does not offer the ability to restart if the sampling is prematurely terminated; thus, it is advisable to always use the nested sampling routine in conjunction with the ``-R`` flag, which when used with the ``nester`` option specifies the termination criterion based upon the expected remaining evidence gain.
 
@@ -150,7 +150,24 @@ The nested sampler can be selected via the ``-D`` flag: ``-D nester``.
 Baselining and batching
 -----------------------
 
-Description forthcoming.
+When performing a nested sampling run, the user might notice that there are two phases to the process: "baselining" and "batching". In the baselining phase, ``nester`` samples from the posterior repeatedly to obtain the log of the evidence :math:`\log_{10} Z` (the N-dimensional volume integral of the postioer), for which it estimates the error :math:`\Delta \log_{10} Z`. Once :math:`\Delta \log_{10} Z` is smaller than some prescribed value (set with the ``-R`` parameter), baselining ceases and batching begins.
+
+In batching, ``nester`` fleshes out the posterior such that even regions of lower probability that may not be dominating the evidence integral are resolved with high fidelity. In this part of the process, the posterior is sampled from again, but this time minimizing the error in the posterior distribution as opposed to its integral. This process continues until a stopping criterion is met, which indicates that the posterior is now of high quality. Typically, the batching phase takes a few times longer than the baselining phase.
+
+.. _switching:
+
+Switching between samplers
+==========================
+
+After completing a nested sampling run, it is often useful to draw parameter combinations from the large collection of samples generated to perform additional analysis (particularly for data-intensive tasks, such as analyzing a collection of model SEDs). This can be easily done by loading the output from the previous run with the ``ensembler`` method (the default), and setting ``MOSFiT`` to run in generative mode with ``-G``,
+
+.. code-block:: bash
+
+    mosfit -e LSQ12dlf -m slsn -w name-of-output.json -G -N 100
+
+where above we specify that we would like 100 parameter combinations from the ``nester`` output. The weights determined with ``nester`` will be used to proportionately draw walkers for ``ensembler``, yielding a sample that properly maps to the posterior determined by the nested sampling. As the above does not perform any additional sampling, the user does not need to specify an event to compare against, and can simply omit the ``-e`` flag and its argument(s).
+
+Because ``nester`` currently does not support restarts, the opposite situation of using ``ensembler`` outputs to initialize ``nester`` is not possible.
 
 .. _io:
 

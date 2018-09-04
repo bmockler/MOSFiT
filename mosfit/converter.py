@@ -79,16 +79,20 @@ class Converter(object):
         self._ecntstrs = self._estrs + [
             'flux error', 'e flux', 'e counts', 'count err', 'flux err',
             'countrate error', 'countrate err', 'e_flux']
+        self._lmagstrs = ['l_']
         self._band_names = [
             'U', 'B', 'V', 'R', 'I', 'J', 'H', 'K', 'K_s', "Ks", "K'", 'u',
             'g', 'r', 'i', 'z', 'y', 'W1', 'W2', 'M2', "u'", "g'", "r'", "i'",
-            "z'", 'C', 'Y', 'Open'
+            "z'", 'C', 'Y', 'I1', 'I2', 'I3', 'I4', 'Open'
         ]
         ebands = [a + b for a, b in chain(
             product(self._ecntstrs, self._band_names),
             product(self._band_names, self._estrs))]
+        lbands = [a + b for a, b in chain(
+            product(self._lmagstrs, self._band_names))]
         self._emagstrs += ebands
         self._ecntstrs += ebands
+        self._lmagstrs += lbands
         key_cache_path = os.path.join(
             self._path, 'cache', 'key_cache_{}.pickle'.format(
                 get_mosfit_hash()))
@@ -111,6 +115,7 @@ class Converter(object):
                 (PHOTOMETRY.MAGNITUDE, [
                  'vega mag', 'ab mag', 'mag', 'magnitude']),
                 (PHOTOMETRY.E_MAGNITUDE, self._emagstrs),
+                (PHOTOMETRY.UPPER_LIMIT, self._lmagstrs),
                 (PHOTOMETRY.TELESCOPE, ['tel', 'telescope']),
                 (PHOTOMETRY.INSTRUMENT, ['inst', 'instrument']),
                 (PHOTOMETRY.OBSERVER, ['observer']),
@@ -284,26 +289,25 @@ class Converter(object):
 
                     fsplit = ftxt.splitlines()
 
-                # If none of the rows contain numeric data, the file
-                # is likely a list of transient names.
-                flines = list(fsplit)
+                    # If none of the rows contain numeric data, the file
+                    # is likely a list of transient names.
+                    flines = list(fsplit)
 
-                if (len(flines) and
-                    (not any(any([is_datum(x.strip()) or x == ''
-                                  for x in (
-                                      y.split(delim) if delim is not None else
-                                      listify(y))])
-                             for y in flines) or
-                     len(flines) == 1)):
-                    new_events = [
-                        it.strip() for s in flines for it in (
-                            s.split(delim) if delim is not None else
-                            listify(s))]
-                    new_event_list.extend(new_events)
-                    continue
+                    if (len(flines) and
+                        (not any(any([
+                            is_datum(x.strip()) or x == '' for x in (
+                                y.split(delim) if delim is not None else
+                                listify(y))]) for y in flines) or
+                         len(flines) == 1)):
+                        new_events = [
+                            it.strip() for s in flines for it in (
+                                s.split(delim) if delim is not None else
+                                listify(s))]
+                        new_event_list.extend(new_events)
+                        continue
 
-                if delim is None:
-                    raise ValueError(prt.text('delimiter_not_found'))
+                    if delim is None:
+                        raise ValueError(prt.text('delimiter_not_found'))
 
                 if not intro_shown:
                     prt.message('converter_info')
@@ -878,10 +882,12 @@ class Converter(object):
                                 merge_with_existing = prt.prompt(
                                     'merge_with_existing', default='y')
                             if merge_with_existing:
+                                print(event_names[ei])
                                 existing = Entry.init_from_file(
                                     catalog=None,
                                     name=event_names[ei],
                                     path=new_events[ei],
+                                    clean=True,
                                     merge=False,
                                     pop_schema=False,
                                     ignore_keys=[ENTRY.MODELS],
@@ -942,7 +948,8 @@ class Converter(object):
                     if ck in cidict:
                         ci = cidict[ck]
                         del(cidict[ck])
-                        del(used_cis[ci])
+                        del(used_cis[ci if isinstance(
+                            ci, string_types) else ci[-1]])
             else:
                 self._first_data = fi
                 break
@@ -956,9 +963,14 @@ class Converter(object):
             # for each column).
             key = PHOTOMETRY.MAGNITUDE
             ekey = PHOTOMETRY.E_MAGNITUDE
+            ukey = PHOTOMETRY.UPPER_LIMIT
             bkey = PHOTOMETRY.BAND
             if ekey in cidict:
                 ci = cidict[ekey]
+                del(cidict[used_cis[ci]])
+                del(used_cis[ci])
+            if ukey in cidict:
+                ci = cidict[ukey]
                 del(cidict[used_cis[ci]])
                 del(used_cis[ci])
             if bkey in cidict:
@@ -979,6 +991,9 @@ class Converter(object):
                         elif ccol in self._emagstrs:
                             cidict.setdefault(ekey, []).append(ci)
                             used_cis[ci] = ekey
+                        elif ccol in self._lmagstrs:
+                            cidict.setdefault(ukey, []).append(ci)
+                            used_cis[ci] = ukey
 
         # See which keys we collected. If we are missing any critical keys, ask
         # the user which column they are.

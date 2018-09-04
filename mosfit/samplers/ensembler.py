@@ -173,7 +173,8 @@ class Ensembler(Sampler):
                     if walk_param is None or 'value' not in walk_param:
                         continue
                     if param:
-                        val = param.fraction(walk_param['value'])
+                        val = param.fraction(
+                            walk_param['value'], self._iterations != 0)
                         if not np.isnan(val):
                             new_walk[k] = val
                 walkers_pool.append(new_walk)
@@ -258,7 +259,6 @@ class Ensembler(Sampler):
                 sampler = MOSSampler(
                     self._ntemps, self._nwalkers, ndim, ln_likelihood,
                     ln_prior, pool=self._pool)
-                st = time.time()
             while (self._iterations > 0 and (
                     self._cc is not None or ici < len(iter_arr))):
                 slr = int(np.round(sli))
@@ -275,7 +275,7 @@ class Ensembler(Sampler):
                                 self._p, iterations=ic, gibbs=self._gibbs if
                                 self._emi >= self._burn_in else True)):
                     if (self._fitter._maximum_walltime is not False and
-                            time.time() - self._fitter._start_time >
+                            self.time_running() >
                             self._fitter._maximum_walltime):
                         prt.message('exceeded_walltime', warning=True)
                         exceeded_walltime = True
@@ -428,7 +428,7 @@ class Ensembler(Sampler):
                         self._emcee_est_t = -1.0
                     else:
                         self._emcee_est_t = float(
-                            time.time() - st - tft) / self._emi * (
+                            self.time_running() - tft) / self._emi * (
                             self._iterations - self._emi
                         ) + tft / self._emi * max(
                                 0, self._burn_in - self._emi)
@@ -469,7 +469,9 @@ class Ensembler(Sampler):
                         messages=messages,
                         make_space=emim1 == 0,
                         convergence_type=self._ct,
-                        convergence_criteria=self._cc)
+                        convergence_criteria=self._cc,
+                        time_running=self.time_running(),
+                        maximum_walltime=self._fitter._maximum_walltime)
 
                     if s_exception:
                         break
@@ -526,7 +528,9 @@ class Ensembler(Sampler):
                                     self._cc is not None else
                                     self._iterations],
                         convergence_type=self._ct,
-                        convergence_criteria=self._cc)
+                        convergence_criteria=self._cc,
+                        time_running=self.time_running(),
+                        maximum_walltime=self._fitter._maximum_walltime)
                     tft = tft + time.time() - sft
                     if s_exception:
                         break
