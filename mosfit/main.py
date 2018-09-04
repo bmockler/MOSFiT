@@ -79,7 +79,6 @@ def get_parser(only=None, printer=None):
         '--walker-paths',
         '-w',
         dest='walker_paths',
-        default=[],
         nargs='+',
         help=prt.text('parser_walker_paths'))
 
@@ -242,6 +241,14 @@ def get_parser(only=None, printer=None):
         help=prt.text('parser_iterations'))
 
     parser.add_argument(
+        '--generative',
+        '-G',
+        dest='generative',
+        default=False,
+        action='store_true',
+        help=prt.text('parser_generative'))
+
+    parser.add_argument(
         '--smooth-times',
         '--plot-points',
         '-S',
@@ -298,7 +305,6 @@ def get_parser(only=None, printer=None):
         '-T',
         dest='num_temps',
         type=int,
-        default=1,
         help=prt.text('parser_num_temps'))
 
     parser.add_argument(
@@ -362,7 +368,6 @@ def get_parser(only=None, printer=None):
         '-f',
         dest='frack_step',
         type=int,
-        default=50,
         help=prt.text('parser_frack_step'))
 
     parser.add_argument(
@@ -392,8 +397,8 @@ def get_parser(only=None, printer=None):
         '-R',
         dest='run_until_converged',
         type=float,
-        default=None,
-        const=1.1,
+        default=False,
+        const=True,
         nargs='?',
         help=prt.text('parser_run_until_converged'))
 
@@ -420,7 +425,6 @@ def get_parser(only=None, printer=None):
         '-M',
         dest='maximum_memory',
         type=float,
-        default=np.inf,
         help=prt.text('parser_maximum_memory'))
 
     parser.add_argument(
@@ -434,7 +438,6 @@ def get_parser(only=None, printer=None):
         '-d',
         dest='draw_above_likelihood',
         type=float,
-        default=False,
         const=True,
         nargs='?',
         help=prt.text('parser_draw_above_likelihood'))
@@ -443,16 +446,16 @@ def get_parser(only=None, printer=None):
         '--gibbs',
         '-g',
         dest='gibbs',
-        default=False,
-        action='store_true',
+        action='store_const',
+        const=True,
         help=prt.text('parser_gibbs'))
 
     parser.add_argument(
         '--save-full-chain',
         '-c',
         dest='save_full_chain',
-        default=False,
-        action='store_true',
+        action='store_const',
+        const=True,
         help=prt.text('parser_save_full_chain'))
 
     parser.add_argument(
@@ -550,6 +553,16 @@ def get_parser(only=None, printer=None):
         default=False,
         action='store_true',
         help=prt.text('parser_local_data_only'))
+
+    parser.add_argument(
+        '--method',
+        '-D',
+        dest='method',
+        type=str,
+        const='select',
+        default='ensembler',
+        nargs='?',
+        help=prt.text('parser_method'))
 
     return parser
 
@@ -654,10 +667,9 @@ def main():
         args.iterations = 0
 
     no_events = False
-
     if args.iterations == -1:
         if len(args.events) == 0:
-            changed_iterations = True
+            no_events = True
             args.iterations = 0
         else:
             args.iterations = 5000
@@ -724,16 +736,26 @@ def main():
         args.fracking = False
 
     if (args.run_until_uncorrelated is not None and
-            args.run_until_converged is not None):
+            args.run_until_converged):
         raise ValueError(
             '`-R` and `-U` options are incompatible, please use one or the '
             'other.')
-    elif args.run_until_uncorrelated is not None:
+    if args.run_until_uncorrelated is not None:
         args.convergence_type = 'acor'
         args.convergence_criteria = args.run_until_uncorrelated
-    elif args.run_until_converged is not None:
-        args.convergence_type = 'psrf'
-        args.convergence_criteria = args.run_until_converged
+    elif args.run_until_converged:
+        if args.method == 'ensembler':
+            args.convergence_type = 'psrf'
+            args.convergence_criteria = (
+                1.1 if args.run_until_converged is True else
+                args.run_until_converged)
+        else:
+            args.convergence_type = 'dlogz'
+
+    if args.method == 'nester':
+        args.convergence_criteria = (
+            0.02 if args.run_until_converged is True else
+            args.run_until_converged)
 
     if is_master():
         # Get hash of ourselves
@@ -827,7 +849,7 @@ def main():
 
         args.upload_token = upload_token
 
-        if changed_iterations:
+        if no_events:
             prt.message('iterations_0', wrapped=True)
 
         # Create the user directory structure, if it doesn't already exist.
@@ -901,6 +923,26 @@ def main():
                     shutil.copy(
                         os.path.join(dir_path, 'models', mdir, mfil),
                         os.path.join(fil_path))
+
+    # Set some default values that we checked above.
+    if args.frack_step == 0:
+        args.fracking = False
+    elif args.frack_step is None:
+        args.frack_step = 50
+    if args.burn is None and args.post_burn is None:
+        args.burn = int(np.floor(args.iterations / 2))
+    if args.draw_above_likelihood is None:
+        args.draw_above_likelihood = False
+    if args.maximum_memory is None:
+        args.maximum_memory = np.inf
+    if args.gibbs is None:
+        args.gibbs = False
+    if args.save_full_chain is None:
+        args.save_full_chain = False
+    if args.num_temps is None:
+        args.num_temps = 1
+    if args.walker_paths is None:
+        args.walker_paths = []
 
     # Then, fit the listed events with the listed models.
     fitargs = vars(args)
