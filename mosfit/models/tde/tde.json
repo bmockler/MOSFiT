@@ -68,6 +68,12 @@
         "class": "parameter",
         "latex": "\\rm photosphere\\ \\rm  exponent\\ 'l' "
     },
+    "rminfrac":{
+        "kind": "parameter",
+        "value": 0.5,
+        "class": "parameter",
+        "latex": "\\rm R_{\\rm phot \\; \\rm min} \\ \\rm  fraction"
+    },
     "fallback":{
         "kind":"engine",
         "inputs":[
@@ -94,7 +100,8 @@
             "fallback",
             "lphoto",
             "Rph0",
-            "viscous"
+            "viscous",
+            "rminfrac"
         ]
     },
     "blackbody":{

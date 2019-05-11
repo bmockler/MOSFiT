@@ -33,6 +33,7 @@ class TdePhotosphere(Photosphere):
         self._rest_t_explosion = kwargs['resttexplosion']
         self._beta = kwargs['beta']  # for now linearly interp between
         # beta43 and beta53 for a given 'b' if Mstar is in transition region
+        self._rminfrac = kwargs['rminfrac']
 
         Rsolar = c.R_sun.cgs.value
         self._Rstar = kwargs['Rstar'] * Rsolar
@@ -47,8 +48,12 @@ class TdePhotosphere(Photosphere):
         rt = (self._Mh / self._Mstar)**(1. / 3.) * self._Rstar
         self._rp = rt / self._beta
 
+        r_circ = 2*self._rp
         r_isco = 6 * c.G.cgs.value * self._Mh * M_SUN_CGS / (C_CGS * C_CGS)
-        rphotmin = r_isco
+        if 10*r_circ > r_isco:
+            rphotmin = r_isco + self._rminfrac * (10*r_circ - r_isco)
+        else: # this is highly disfavored by likelihood, but just in case
+            rphotmin = r_isco
 
         a_p = (c.G.cgs.value * self._Mh * M_SUN_CGS * ((
             tpeak - self._rest_t_explosion) * DAY_CGS / np.pi)**2)**(1. / 3.)

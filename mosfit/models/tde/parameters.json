@@ -45,6 +45,10 @@
         "max_value":1.0e4,
         "log":true
     },
+    "rminfrac":{
+        "min_value":0,
+        "max_value":1
+    },
     "codeltatime":{
         "min_value":1.0e-3,
         "max_value":1.0e3,
