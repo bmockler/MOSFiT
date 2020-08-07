@@ -248,7 +248,7 @@ class Fallback(Engine):
             # region going from gamma = 5/3 to gamma = 4/3 as mass increases
             gamma_interp = True
             gammas = self._gammas
-            # gfrac should == 0 for 4/3; == 1 for 5/3
+            # gfrac should == 1 for 4/3; == 0 for 5/3
             gfrac = (self._Mstar - 1.) / (0.3 - 1.)
             # beta_43 is always larger than beta_53
             self._beta = self._betas['5-3'] + (

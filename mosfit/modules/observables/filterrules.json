@@ -2159,5 +2159,69 @@
 			}
 		}
 		
+	},
+	{
+		"telescopes": [
+			"LasCumbres"
+		],
+		"systems": [
+			"AB",
+			""
+		],
+		"instruments": [
+			"",
+			"LasCumbres"
+		],
+		"filters": {
+			"Bessel_B":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_B",
+				"offset": 0
+			},
+			"B":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_B",
+				"offset": 0
+			},
+			"Bessel_V":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_V",
+				"offset": 0
+			},
+			"V":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_V",
+				"offset": 0
+			}
+		}
+		
+	},
+	{
+		"telescopes": [
+			"LasCumbres"
+		],
+		"systems": [
+			"Vega"
+		],
+		"instruments": [
+			"",
+			"LasCumbres"
+		],
+		"filters": {
+			"Bessel_B":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_B",
+				"offset": 0
+			},
+			"B":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_B",
+				"offset": 0
+			},
+			"Bessel_V":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_V",
+				"offset": 0
+			},
+			"V":{
+				"SVO": "LasCumbres/LasCumbres.Bessel_V",
+				"offset": 0
+			}
+		}
+		
 	}
+
 ]
