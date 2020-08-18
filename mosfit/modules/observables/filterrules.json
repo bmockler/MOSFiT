@@ -2220,6 +2220,65 @@
 				"offset": 0
 			}
 		}
+	},
+	{
+		"telescopes": [
+			"Palomar",
+			"P48"
+		],
+		"systems": [
+			"AB",
+			""
+		],
+		"instruments": [
+			"",
+			"ZTF",
+			"ZTF-Cam"
+		],
+		"filters": {
+			"g":{
+				"SVO": "Palomar/ZTF.g",
+				"offset": 0
+			},
+			"r":{
+				"SVO": "Palomar/ZTF.r",
+				"offset": 0
+			},
+			"i":{
+				"SVO": "Palomar/ZTF.i",
+				"offset": 0
+			}
+		}
+		
+	},
+	{
+		"telescopes": [
+			"Palomar",
+			"P48"
+		],
+		"systems": [
+			"Vega"
+		],
+		"instruments": [
+			"",
+			"ZTF",
+			"ZTF-Cam"
+		],
+		"filters": {
+			"g":{
+				"SVO": "Palomar/ZTF.g",
+				"offset": 0
+			},
+			"r":{
+				"SVO": "Palomar/ZTF.r",
+				"offset": 0
+			},
+			"i":{
+				"SVO": "Palomar/ZTF.i",
+				"offset": 0
+			}
+		}
+		
 	}
 
 ]
