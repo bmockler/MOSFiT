@@ -4,14 +4,18 @@
         "max_value":1.0e23,
         "log":true
     },
+    "fnickel":{
+        "min_value":1e-3,
+        "max_value":1.0,
+        "log":true
+    },
     "Pspin":{
         "min_value":1.0,
         "max_value":10.0
     },
     "Bfield":{
         "min_value":0.1,
-        "max_value":10.0,
-        "log":true
+        "max_value":10.0
     },
     "Mns":{
         "min_value":1.0,
@@ -25,11 +29,6 @@
         "min_value":-500.0,
         "max_value":0.0
     },
-    "temperature":{
-        "min_value":1.0e3,
-        "max_value":1.0e5,
-        "log":true
-    },
     "kappa":{
         "min_value":0.05,
         "max_value":0.2
@@ -40,14 +39,25 @@
         "log":true
     },
     "mejecta":{
-        "min_value":1.0e-3,
+        "min_value":0.1,
         "max_value":100.0,
         "log":true
     },
+    "alpha":{
+        "min_value":0.0,
+        "max_value":5.0
+    },
+    "cutoff_wavelength":{
+        "min_value":2000.0,
+        "max_value":6000.0
+    },
     "vejecta":{
-        "min_value":1.0e3,
-        "max_value":1.0e5,
-        "log":true
+        "min_value":5.0e3,
+        "max_value":2.0e4
+    },
+    "temperature":{
+        "min_value":3.0e3,
+        "max_value":1.0e4
     },
     "variance":{
         "min_value":1.0e-3,

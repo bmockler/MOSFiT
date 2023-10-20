@@ -8,6 +8,12 @@
         ],
         "latex":"E({\\rm B} - {\\rm V})"
     },
+    "fnickel":{
+        "kind":"parameter",
+        "value":1.0,
+        "class":"parameter",
+        "latex":"f_{\\rm Ni}"
+    },
     "nhhost":{
         "kind":"parameter",
         "value":1.0e18,
@@ -34,7 +40,7 @@
         "kind":"parameter",
         "value":1.0,
         "class":"parameter",
-        "latex":"B"
+        "latex":"B\\,(10^{14}\\,{\\rm G})"
     },
     "Mns":{
         "kind":"parameter",
@@ -78,6 +84,42 @@
         "class":"parameter",
         "latex":"T_{\\min}\\,{\\rm (K)}"
     },
+    "alpha":{
+        "kind":"parameter",
+        "value":0.0,
+        "class":"parameter",
+        "latex":"\\alpha"
+    },
+    "cutoff_wavelength":{
+        "kind":"parameter",
+        "value":3000.0,
+        "class":"parameter",
+        "latex":"\\lambda_{\\rm cutoff}"
+    },
+    "neutrino_energy":{
+        "kind":"parameter",
+        "value":1.0e51,
+        "class":"parameter",
+        "latex":"E_{\\nu}"
+    },
+    "tnebular_min":{
+        "kind":"parameter",
+        "value":100.0,
+        "class":"parameter",
+        "latex":"t_{\\rm neb}"
+    },
+    "nickelcobalt":{
+        "kind":"engine",
+        "inputs":[
+            "densetimes",
+            "mejecta",
+            "fnickel",
+            "texplosion"
+        ],
+        "replacements":{
+            "luminosities": "nico_luminosities"
+        }
+    },
     "magnetar":{
         "kind":"engine",
         "inputs":[
@@ -88,12 +130,30 @@
             "Mns",
             "thetaPB",
             "texplosion"
-        ]
+        ],
+        "replacements":{
+            "luminosities": "mag_luminosities"
+        }
+    },
+    "total_luminosity":{
+        "kind":"utility",
+        "operator":"+",
+        "operands":[
+            "mag_luminosities",
+            "nico_luminosities"
+        ],
+        "inputs":[
+            "nickelcobalt",
+            "magnetar"
+        ],
+        "result":"luminosities",
+        "wants_dense":true,
+        "class":"operator"
     },
     "diffusion":{
         "kind":"transform",
         "inputs":[
-            "magnetar",
+            "total_luminosity",
             "kappa",
             "kappagamma",
             "mejecta",
@@ -109,12 +169,14 @@
             "temperature"
         ]
     },
-    "blackbody":{
+    "blackbody_supressed":{
         "kind":"sed",
         "inputs":[
             "texplosion",
             "redshift",
-            "temperature_floor"
+            "temperature_floor",
+            "cutoff_wavelength",
+            "alpha"
         ],
         "requests":{
             "band_wave_ranges": "photometry"
@@ -123,7 +185,7 @@
     "losextinction":{
         "kind":"sed",
         "inputs":[
-            "blackbody",
+            "blackbody_supressed",
             "nhhost",
             "rvhost",
             "ebv"
@@ -142,6 +204,29 @@
         "inputs":[
             "losextinction",
             "lumdist"
+        ]
+    },
+    "slsnni_constraints":{
+        "kind":"constraint",
+        "inputs":[
+            "mejecta",
+            "vejecta",
+            "kappa",
+            "tnebular_min",
+            "Pspin",
+            "Mns",
+            "diffusion",
+            "texplosion",
+            "redshift",
+            "alltimes",
+            "neutrino_energy"
+        ]
+    },
+    "likelihood":{
+        "kind":"objective",
+        "inputs":[
+            "diagonal",
+            "slsnni_constraints"
         ]
     }
 }

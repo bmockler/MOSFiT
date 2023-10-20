@@ -1,4 +1,4 @@
-"""Definitions for the `Diffusion` class."""
+"""Definitions for the `DiffusionAspherical` class."""
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -9,16 +9,21 @@ from mosfit.modules.transforms.transform import Transform
 # Important: Only define one ``Module`` class per file.
 
 
-class Diffusion(Transform):
-    """Photon diffusion transform."""
+class DiffusionAspherical(Transform):
+    """
+    Photon diffusion transform.
+    Uses viewing angle and axis-ratio scalings from Darbha and Kasen 2020
+    """
 
-    N_INT_TIMES = 1000
+    N_INT_TIMES = 100
     MIN_LOG_SPACING = -3
     DIFF_CONST = 2.0 * M_SUN_CGS / (13.7 * C_CGS * KM_CGS)
     TRAP_CONST = 3.0 * M_SUN_CGS / (FOUR_PI * KM_CGS ** 2)
 
     _REFERENCES = [
-        {'bibcode': '1982ApJ...253..785A'}
+        {'bibcode': '1982ApJ...253..785A'},
+        {'bibcode': '2020ApJ...897..150D'}
+
     ]
 
     def process(self, **kwargs):
@@ -28,6 +33,8 @@ class Diffusion(Transform):
         self._kappa_gamma = kwargs[self.key('kappagamma')]
         self._m_ejecta = kwargs[self.key('mejecta')]
         self._v_ejecta = kwargs[self.key('vejecta')]
+        self._Aproj = kwargs[self.key('area_proj')]
+        self._Aref = kwargs[self.key('area_ref')]
 
         self._tau_diff = np.sqrt(self.DIFF_CONST * self._kappa *
                                  self._m_ejecta / self._v_ejecta) / DAY_CGS
@@ -35,6 +42,7 @@ class Diffusion(Transform):
             self.TRAP_CONST * self._kappa_gamma * self._m_ejecta /
             (self._v_ejecta ** 2)) / DAY_CGS ** 2
         td2, A = self._tau_diff ** 2, self._trap_coeff  # noqa: F841
+
 
         new_lums = np.zeros_like(self._times_to_process)
         if len(self._dense_times_since_exp) < 2:
@@ -69,6 +77,10 @@ class Diffusion(Transform):
 
         uniq_lums = np.trapz(int_args, int_times)
         uniq_lums *= -2.0 * np.expm1(-A / int_te2s) / td2
+
+        uniq_lums *= (1 + 1.4 * (2 + uniq_times/self._tau_diff/0.59) / (1 +
+                    np.exp(uniq_times/self._tau_diff/0.59)) *
+                    (self._Aproj/self._Aref - 1))
 
         new_lums = uniq_lums[np.searchsorted(uniq_times,
                                              self._times_to_process)]
