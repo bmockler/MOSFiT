@@ -96,6 +96,26 @@
 				"SVO": "SLOAN/SDSS.zprime_filter",
 				"offset": 0
 			},
+			"up": {
+				"SVO": "SLOAN/SDSS.uprime_filter",
+				"offset": 0
+			},
+			"gp": {
+				"SVO": "SLOAN/SDSS.gprime_filter",
+				"offset": 0
+			},
+			"rp": {
+				"SVO": "SLOAN/SDSS.rprime_filter",
+				"offset": 0
+			},
+			"ip": {
+				"SVO": "SLOAN/SDSS.iprime_filter",
+				"offset": 0
+			},
+			"zp": {
+				"SVO": "SLOAN/SDSS.zprime_filter",
+				"offset": 0
+			},
 			"ROTSE": {
 				"SVO": "Generic/Bessell.R",
 				"offset": 0
@@ -169,6 +189,21 @@
 				"SVO": "SLOAN/SDSS.iprime_filter"
 			},
 			"zprime_filter": {
+				"SVO": "SLOAN/SDSS.zprime_filter"
+			},
+			"up": {
+				"SVO": "SLOAN/SDSS.uprime_filter"
+			},
+			"gp": {
+				"SVO": "SLOAN/SDSS.gprime_filter"
+			},
+			"rp": {
+				"SVO": "SLOAN/SDSS.rprime_filter"
+			},
+			"ip": {
+				"SVO": "SLOAN/SDSS.iprime_filter"
+			},
+			"zp": {
 				"SVO": "SLOAN/SDSS.zprime_filter"
 			},
 			"ROTSE": {
@@ -651,6 +686,26 @@
 				"offset": 0
 			},
 			"zprime_filter": {
+				"SVO": "SLOAN/SDSS.zprime_filter",
+				"offset": 0
+			},
+			"up": {
+				"SVO": "SLOAN/SDSS.uprime_filter",
+				"offset": 0
+			},
+			"gp": {
+				"SVO": "SLOAN/SDSS.gprime_filter",
+				"offset": 0
+			},
+			"rp": {
+				"SVO": "SLOAN/SDSS.rprime_filter",
+				"offset": 0
+			},
+			"ip": {
+				"SVO": "SLOAN/SDSS.iprime_filter",
+				"offset": 0
+			},
+			"zp": {
 				"SVO": "SLOAN/SDSS.zprime_filter",
 				"offset": 0
 			}
@@ -1188,46 +1243,6 @@
 		],
 		"telescopes": [
 			"",
-			"LCO"
-		],
-		"instruments": [
-			"",
-			"Sinistro"
-		],
-		"filters": {
-			"w": {
-				"SVO": "PAN-STARRS/PS1.w",
-				"offset": 0
-			},
-			"g": {
-				"SVO": "PAN-STARRS/PS1.g",
-				"offset": 0
-			},
-			"V": {
-				"SVO": "Generic/Bessell.V",
-				"offset": 0
-			},
-			"r": {
-				"SVO": "PAN-STARRS/PS1.r",
-				"offset": 0
-			},
-			"i": {
-				"SVO": "PAN-STARRS/PS1.i",
-				"offset": 0
-			},
-			"z": {
-				"SVO": "PAN-STARRS/PS1.z",
-				"offset": 0
-			}
-		}
-	},
-	{
-		"systems": [
-			"",
-			"AB"
-		],
-		"telescopes": [
-			"",
 			"LaSilla"
 		],
 		"instruments": [
@@ -1682,6 +1697,45 @@
 			"Swope"
 		],
 		"instruments": [
+			"Direct/4kx4k",
+			"e2v"
+		],
+		"systems": [
+			"",
+			"AB"
+		],
+		"filters": {
+			"u": {
+				"SVO": "LCO/e2v.u",
+				"offset": 0
+			},
+			"g": {
+				"SVO": "LCO/e2v.g",
+				"offset": 0
+			},
+			"r": {
+				"SVO": "LCO/e2v.r",
+				"offset": 0
+			},
+			"i": {
+				"SVO": "LCO/e2v.i",
+				"offset": 0
+			},
+			"B": {
+				"SVO": "LCO/e2v.B",
+				"offset": 0
+			},
+			"V": {
+				"SVO": "LCO/e2v.V",
+				"offset": 0
+			}
+		}
+	},
+	{
+		"telescopes": [
+			"Swope"
+		],
+		"instruments": [
 			"Swope"
 		],
 		"systems": [
@@ -1907,7 +1961,8 @@
 			"",
 			"PS1",
 			"Pan-STARRS1",
-			"GPC"
+			"GPC",
+			"GPC1"
 		],
 		"bandsets": [
 			"",
@@ -2113,7 +2168,7 @@
 			""
 		],
 		"instruments": [
-			"",
+			"ATLAS",
 			"ACAM1"
 		],
 		"filters": {
@@ -2161,7 +2216,11 @@
 	},
 	{
 		"telescopes": [
-			"LasCumbres"
+			"LasCumbres",
+			"LCO",
+		    "LCOGT",
+		    "Siding Spring 1m",
+		    "Siding-Spring-1m"
 		],
 		"systems": [
 			"AB",
@@ -2169,7 +2228,12 @@
 		],
 		"instruments": [
 			"",
-			"LasCumbres"
+			"LasCumbres",
+            "1m",
+            "0.4m",
+			"LCO",
+			"Siding Spring 1m",
+			"Sinistro"
 		],
 		"filters": {
 			"Bessel_B":{
@@ -2186,6 +2250,62 @@
 			},
 			"V":{
 				"SVO": "LasCumbres/LasCumbres.Bessel_V",
+				"offset": 0
+			},
+			"up":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_up",
+				"offset": 0
+			},
+			"gp":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_gp",
+				"offset": 0
+			},
+			"rp":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_rp",
+				"offset": 0
+			},
+			"ip":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_ip",
+				"offset": 0
+			},
+			"u":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_up",
+				"offset": 0
+			},
+			"g":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_gp",
+				"offset": 0
+			},
+			"r":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_rp",
+				"offset": 0
+			},
+			"i":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_ip",
+				"offset": 0
+			},
+			"y": {
+				"SVO": "LasCumbres/LasCumbres.PS_y",
+				"offset": 0
+			},
+			"ys": {
+				"SVO": "LasCumbres/LasCumbres.PS_y",
+				"offset": 0
+			},
+			"z": {
+				"SVO": "LasCumbres/LasCumbres.PS_z",
+				"offset": 0
+			},
+			"zs": {
+				"SVO": "LasCumbres/LasCumbres.PS_z",
+				"offset": 0
+			},
+			"w": {
+				"SVO": "PAN-STARRS/PS1.w",
+				"offset": 0
+			},
+			"V": {
+				"SVO": "Generic/Bessell.V",
 				"offset": 0
 			}
 		}
@@ -2193,31 +2313,78 @@
 	},
 	{
 		"telescopes": [
-			"LasCumbres"
+			"LasCumbres",
+			"LCO",
+		    "LCOGT",
+		    "Siding Spring 1m",
+		    "Siding-Spring-1m"
 		],
 		"systems": [
 			"Vega"
 		],
 		"instruments": [
 			"",
-			"LasCumbres"
+			"LasCumbres",
+            "1m",
+            "0.4m",
+			"LCO",
+			"Siding Spring 1m",
+			"Sinistro"
 		],
 		"filters": {
 			"Bessel_B":{
-				"SVO": "LasCumbres/LasCumbres.Bessel_B",
-				"offset": 0
+				"SVO": "LasCumbres/LasCumbres.Bessel_B"
 			},
 			"B":{
-				"SVO": "LasCumbres/LasCumbres.Bessel_B",
-				"offset": 0
+				"SVO": "LasCumbres/LasCumbres.Bessel_B"
 			},
 			"Bessel_V":{
-				"SVO": "LasCumbres/LasCumbres.Bessel_V",
-				"offset": 0
+				"SVO": "LasCumbres/LasCumbres.Bessel_V"
 			},
 			"V":{
-				"SVO": "LasCumbres/LasCumbres.Bessel_V",
-				"offset": 0
+				"SVO": "LasCumbres/LasCumbres.Bessel_V"
+			},
+			"up":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_up"
+			},
+			"gp":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_gp"
+			},
+			"rp":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_rp"
+			},
+			"ip":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_ip"
+			},
+			"u":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_up"
+			},
+			"g":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_gp"
+			},
+			"r":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_rp"
+			},
+			"i":{
+				"SVO": "LasCumbres/LasCumbres.SDSS_ip"
+			},
+			"y": {
+				"SVO": "LasCumbres/LasCumbres.PS_y"
+			},
+			"ys": {
+				"SVO": "LasCumbres/LasCumbres.PS_y"
+			},
+			"z": {
+				"SVO": "LasCumbres/LasCumbres.PS_z"
+			},
+			"zs": {
+				"SVO": "LasCumbres/LasCumbres.PS_z"
+			},
+			"w": {
+				"SVO": "PAN-STARRS/PS1.w"
+			},
+			"V": {
+				"SVO": "Generic/Bessell.V"
 			}
 		}
 	},
@@ -2233,7 +2400,8 @@
 		"instruments": [
 			"",
 			"ZTF",
-			"ZTF-Cam"
+			"ZTF-Cam",
+			"P48+ZTF"
 		],
 		"filters": {
 			"g":{
@@ -2262,20 +2430,18 @@
 		"instruments": [
 			"",
 			"ZTF",
-			"ZTF-Cam"
+			"ZTF-Cam",
+			"P48+ZTF"
 		],
 		"filters": {
 			"g":{
-				"SVO": "Palomar/ZTF.g",
-				"offset": 0
+				"SVO": "Palomar/ZTF.g"
 			},
 			"r":{
-				"SVO": "Palomar/ZTF.r",
-				"offset": 0
+				"SVO": "Palomar/ZTF.r"
 			},
 			"i":{
-				"SVO": "Palomar/ZTF.i",
-				"offset": 0
+				"SVO": "Palomar/ZTF.i"
 			}
 		}
 		

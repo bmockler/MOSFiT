@@ -1,7 +1,7 @@
 """Definitions for the `TDEConstraints` class."""
 import astropy.constants as c
-
-from mosfit.constants import C_CGS, M_SUN_CGS
+import numpy as np
+from mosfit.constants import C_CGS, M_SUN_CGS, DAY_CGS
 from mosfit.modules.constraints.constraint import Constraint
 
 
@@ -30,5 +30,39 @@ class TDEConstraints(Constraint):
         #    self._score_modifier -= 1000.0**(10.0*(self._Rg / self._rp - 0.9))
 
         self._score_modifier -= 10.0 * (self._Rs / self._rp) ** 3
+
+        # constraints on the maximum photosphere size
+        if True:
+            self._rphotmaxwind = kwargs['rphotmaxwind']
+            self._vphotmaxwind = kwargs['vphotmaxwind']
+            self._times = np.array(kwargs['rest_times'])
+            self._rest_t_explosion = kwargs['resttexplosion']
+            self._radius_phot = np.array(kwargs['radiusphot'])
+            self._rphotmin = np.array(kwargs['rphotmin'])
+
+            # semi-major axis of material that accretes at self._times,
+            # only calculate for times after first mass accretion
+            a_t = (c.G.cgs.value * self._bhmass * M_SUN_CGS * ((
+                self._times - self._rest_t_explosion) * DAY_CGS / np.pi)**2)**(
+                    1. / 3.)
+            a_t[self._times < self._rest_t_explosion] = 0.0
+
+            if self._rphotmaxwind:
+                # assume wind is launched from circularization radius at first light
+                #rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
+                #self._times - self._rest_t_explosion) * DAY_CGS # rphotmax set to max of relativistic wind velocity or apocenter of debris stream
+                
+                #rphotmax2 = self._rp + 2 * a_t 
+                #rphotmax[rphotmax<rphotmax2] = rphotmax2[rphotmax<rphotmax2]
+                # take larger value at each point in time 
+                # assume rphotmax at early times is apocenter of debris, then at later times is wind radius
+                self._rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
+                self._times - self._rest_t_explosion) * DAY_CGS + self._rp + 2 * a_t 
+                self._rphotmax[self._times < self._rest_t_explosion] = 0.0
+            else:
+                self._rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
+
+            # if radius_phot = rphotmax, score_modifier == -10
+            self._score_modifier -= 10.0 * (np.max(self._radius_phot/self._rphotmax)) ** 2
 
         return {self.key('score_modifier'): self._score_modifier}

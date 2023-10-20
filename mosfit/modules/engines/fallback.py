@@ -71,7 +71,6 @@ class Fallback(Engine):
             # only convert dm/de --> dm/dt for mass that is bound to BH (e < 0)
             ebound = e[e < 0]
             dmdebound = d[e < 0]
-
             if min(dmdebound) < 0:  # shouldn't happen, just a check
 
                 print('beta, gamma, negative dmde bound:', self._sim_beta[g],
@@ -594,7 +593,8 @@ class Fallback(Engine):
         # luminosities = np.where(
         #    luminosities > Ledd, (1. + np.log10(luminosities/Ledd)) * Ledd,
         #    luminosities)
-        luminosities = (luminosities * Ledd / (luminosities + Ledd))
+        self._Leddlim = kwargs['Leddlim']  # user defined multiple of Ledd
+        luminosities = (luminosities * self._Leddlim*Ledd / (luminosities + self._Leddlim*Ledd))
 
         return {'dense_luminosities': luminosities, 'Rstar': Rstar,
                 'tpeak': tpeak, 'beta': self._beta, 'starmass': self._Mstar,

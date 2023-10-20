@@ -52,9 +52,16 @@
     },
     "bhmass":{
         "kind":"parameter",
-        "value":1.78e7,
+        "value":1.0e6,
         "class":"parameter",
         "latex":"M_{h} (M_{\\odot})"
+    },
+    "Leddlim":{
+        "kind":"parameter",
+        "value":1,
+        "class":"parameter",
+        "fixed":true,
+        "latex":"L_{\\rm edd,\\ limit}"
     },
     "Rph0":{
         "kind":"parameter",
@@ -68,6 +75,20 @@
         "class": "parameter",
         "latex": "\\rm photosphere\\ \\rm  exponent\\ 'l' "
     },
+    "rphotmaxwind":{
+        "kind":"parameter",
+        "value":1,
+        "class":"parameter",
+        "fixed":true,
+        "latex": "\\rm R_{phot} \\ max, \\relativistic \\ wind \\ (boolean)"
+    },
+    "vphotmaxwind":{
+        "kind":"parameter",
+        "value":0.5,
+        "class":"parameter",
+        "fixed":true,
+        "latex": "v_{\\rm phot \\ max} (\\rm fraction \\ of \\ c)"
+    },
     "fallback":{
         "kind":"engine",
         "inputs":[
@@ -76,7 +97,8 @@
             "b",
             "efficiency",
             "texplosion",
-            "starmass"
+            "starmass",
+            "Leddlim"
         ]
     },
     "viscous":{
@@ -94,7 +116,9 @@
             "fallback",
             "lphoto",
             "Rph0",
-            "viscous"
+            "viscous",
+            "rphotmaxwind",
+            "vphotmaxwind"
         ]
     },
     "blackbody":{

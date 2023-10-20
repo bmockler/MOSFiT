@@ -33,6 +33,8 @@ class TdePhotosphere(Photosphere):
         self._rest_t_explosion = kwargs['resttexplosion']
         self._beta = kwargs['beta']  # for now linearly interp between
         # beta43 and beta53 for a given 'b' if Mstar is in transition region
+        self._rphotmaxwind = kwargs['rphotmaxwind']
+        self._vphotmaxwind = kwargs['vphotmaxwind']
 
         Rsolar = c.R_sun.cgs.value
         self._Rstar = kwargs['Rstar'] * Rsolar
@@ -43,6 +45,8 @@ class TdePhotosphere(Photosphere):
 
         Ledd = (4 * np.pi * c.G.cgs.value * self._Mh * M_SUN_CGS *
                 C_CGS / kappa_t)
+        self._Leddlim = kwargs['Leddlim']
+        Llim = self._Leddlim*Ledd  # user defined multiple of Ledd
 
         rt = (self._Mh / self._Mstar)**(1. / 3.) * self._Rstar
         self._rp = rt / self._beta
@@ -60,15 +64,30 @@ class TdePhotosphere(Photosphere):
                 1. / 3.)
         a_t[self._times < self._rest_t_explosion] = 0.0
 
-        rphotmax = self._rp + 2 * a_t
+        if False:
+            if self._rphotmaxwind:
+                # assume wind is launched from circularization radius at first light
+                rphotmax = 2 * self._rp + self._vphotmaxwind * C_CGS * (
+                self._times - self._rest_t_explosion) * DAY_CGS 
+                # rphotmax set to max of relativistic wind velocity or apocenter of debris stream
+                #rphotmax2 = self._rp + 2 * a_t 
+                #rphotmax[rphotmax<rphotmax2] = rphotmax2[rphotmax<rphotmax2]
+                # take larger value at each point in time 
+            else:
+                rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
 
+        if True: # just for saving for testing for now, for some reason couldn't save from tde_constraints
+            rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
+                self._times - self._rest_t_explosion) * DAY_CGS + self._rp + 2 * a_t 
+            rphotmax[self._times < self._rest_t_explosion] = 0.0
         # adding rphotmin on to rphot for soft min
         # also creating soft max -- inverse( 1/rphot + 1/rphotmax)
-        rphot = self._Rph_0 * a_p * (self._luminosities / Ledd)**self._l
+        rphot = self._Rph_0 * a_p * (self._luminosities / Llim)**self._l
 
-        rphot = (rphot * rphotmax) / (rphot + rphotmax) + rphotmin
+        #rphot = (rphot * rphotmax) / (rphot + rphotmax) + rphotmin
+        rphot = rphot + rphotmin
 
         Tphot = (self._luminosities / (rphot**2 * self.STEF_CONST))**0.25
 
         return {'radiusphot': rphot, 'temperaturephot': Tphot,
-                'rp': self._rp}
+                'rp': self._rp, 'rphotmin': rphotmin, 'rphotmax': rphotmax}
