@@ -28,7 +28,7 @@
     },
     "texplosion":{
         "kind":"parameter",
-        "value":-12.0,
+        "value":-20.0,
         "class":"parameter",
         "latex":"t_{\\rm exp}\\,{\\rm (days)}"
     },

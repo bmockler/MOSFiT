@@ -64,26 +64,19 @@ class TdePhotosphere(Photosphere):
                 1. / 3.)
         a_t[self._times < self._rest_t_explosion] = 0.0
 
-        if False:
-            if self._rphotmaxwind:
-                # assume wind is launched from circularization radius at first light
-                rphotmax = 2 * self._rp + self._vphotmaxwind * C_CGS * (
-                self._times - self._rest_t_explosion) * DAY_CGS 
-                # rphotmax set to max of relativistic wind velocity or apocenter of debris stream
-                #rphotmax2 = self._rp + 2 * a_t 
-                #rphotmax[rphotmax<rphotmax2] = rphotmax2[rphotmax<rphotmax2]
-                # take larger value at each point in time 
-            else:
-                rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
+        if False: # just for saving for testing
+            
+            rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
 
-        if True: # just for saving for testing for now, for some reason couldn't save from tde_constraints
+        if False: # just for saving for testing for now, for some reason couldn't save from tde_constraints
             rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
                 self._times - self._rest_t_explosion) * DAY_CGS + self._rp + 2 * a_t 
             rphotmax[self._times < self._rest_t_explosion] = 0.0
         # adding rphotmin on to rphot for soft min
-        # also creating soft max -- inverse( 1/rphot + 1/rphotmax)
+        
         rphot = self._Rph_0 * a_p * (self._luminosities / Llim)**self._l
 
+        # soft max -- inverse( 1/rphot + 1/rphotmax) -- currently implementing max photosphere in constraints instead
         #rphot = (rphot * rphotmax) / (rphot + rphotmax) + rphotmin
         rphot = rphot + rphotmin
 

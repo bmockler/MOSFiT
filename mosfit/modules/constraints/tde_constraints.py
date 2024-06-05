@@ -49,20 +49,16 @@ class TDEConstraints(Constraint):
 
             if self._rphotmaxwind:
                 # assume wind is launched from circularization radius at first light
-                #rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
-                #self._times - self._rest_t_explosion) * DAY_CGS # rphotmax set to max of relativistic wind velocity or apocenter of debris stream
-                
-                #rphotmax2 = self._rp + 2 * a_t 
-                #rphotmax[rphotmax<rphotmax2] = rphotmax2[rphotmax<rphotmax2]
-                # take larger value at each point in time 
                 # assume rphotmax at early times is apocenter of debris, then at later times is wind radius
+                # adding allows for smooth transition from minimum radius = circularization radius to minimum radius = apocenter of debris to minimum radius = wind radius
                 self._rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
-                self._times - self._rest_t_explosion) * DAY_CGS + self._rp + 2 * a_t 
+                self._times - self._rest_t_explosion) * DAY_CGS + 2 * a_t #self._rp + 2 * a_t 
                 self._rphotmax[self._times < self._rest_t_explosion] = 0.0
             else:
                 self._rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
 
             # if radius_phot = rphotmax, score_modifier == -10
             self._score_modifier -= 10.0 * (np.max(self._radius_phot/self._rphotmax)) ** 2
+
 
         return {self.key('score_modifier'): self._score_modifier}
