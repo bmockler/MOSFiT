@@ -1,11 +1,7 @@
 """Definitions for the `Gaussian` class."""
 import numpy as np
-<<<<<<< HEAD
-from scipy.special import erfinv
-from scipy.special import erf
-=======
 from scipy.special import erf, erfinv
->>>>>>> d2c4b0c884eff783f2435e75bcdca6fb9c8d288c
+
 
 from mosfit.modules.parameters.parameter import Parameter
 

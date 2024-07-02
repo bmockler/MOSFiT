@@ -45,6 +45,16 @@
         "max_value":1.0e4,
         "log":true
     },
+    "latetime_luminosityfraction":{
+        "min_value":1.0e-4,
+        "max_value":1.0e-1,
+        "log":true
+    },
+    "latetime_temperature":{
+        "min_value":5.0e3,
+        "max_value":5.0e5,
+        "log":true
+    },
     "codeltatime":{
         "min_value":1.0e-3,
         "max_value":1.0e3,

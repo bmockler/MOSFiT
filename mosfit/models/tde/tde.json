@@ -76,6 +76,25 @@
         "class": "parameter",
         "latex": "\\rm photosphere\\ \\rm  exponent\\ 'l' "
     },
+    "include_latetime_luminosity":{
+        "kind":"parameter",
+        "value":1,
+        "class":"parameter",
+        "fixed":true,
+        "latex": "\\rm include \\ late \\ time \\ luminosity\\ (boolean)"
+    },
+    "latetime_luminosityfraction":{
+        "kind": "parameter",
+        "value": 0.01,
+        "class": "parameter",
+        "latex": "\\rm late\\ time\\ luminosity\\ fraction"
+    },
+    "latetime_temperature":{
+        "kind": "parameter",
+        "value": 1e4,
+        "class": "parameter",
+        "latex": "\\rm late\\ time\\ temperature"
+    },
     "rphotmaxwind":{
         "kind":"parameter",
         "value":1,
@@ -122,12 +141,15 @@
             "vphotmaxwind"
         ]
     },
-    "blackbody":{
+    "blackbody_tde":{
         "kind":"sed",
         "inputs":[
             "texplosion",
             "redshift",
-            "tde_photosphere"
+            "tde_photosphere",
+            "include_latetime_luminosity",
+            "latetime_luminosityfraction",
+            "latetime_temperature"
         ],
         "requests":{
             "band_wave_ranges": "photometry"
@@ -136,7 +158,7 @@
     "losextinction":{
         "kind":"sed",
         "inputs":[
-            "blackbody",
+            "blackbody_tde",
             "nhhost",
             "rvhost",
             "ebv"

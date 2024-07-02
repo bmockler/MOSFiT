@@ -68,7 +68,7 @@ class TdePhotosphere(Photosphere):
             
             rphotmax = self._rp + 2 * a_t  # rphotmax set to apocenter of debris stream
 
-        if False: # just for saving for testing for now, for some reason couldn't save from tde_constraints
+        if False: # just for saving for testing
             rphotmax = 2*self._rp + self._vphotmaxwind * C_CGS * (
                 self._times - self._rest_t_explosion) * DAY_CGS + self._rp + 2 * a_t 
             rphotmax[self._times < self._rest_t_explosion] = 0.0
@@ -76,11 +76,12 @@ class TdePhotosphere(Photosphere):
         
         rphot = self._Rph_0 * a_p * (self._luminosities / Llim)**self._l
 
-        # soft max -- inverse( 1/rphot + 1/rphotmax) -- currently implementing max photosphere in constraints instead
+        # soft max -- inverse( 1/rphot + 1/rphotmax) -- implementing max photosphere in constraints instead
         #rphot = (rphot * rphotmax) / (rphot + rphotmax) + rphotmin
         rphot = rphot + rphotmin
+        #rphot[rphot<rphotmin] = np.ones(len(rphot[rphot<rphotmin]))*rphotmin
 
         Tphot = (self._luminosities / (rphot**2 * self.STEF_CONST))**0.25
 
         return {'radiusphot': rphot, 'temperaturephot': Tphot,
-                'rp': self._rp, 'rphotmin': rphotmin, 'rphotmax': rphotmax}
+                'rp': self._rp}

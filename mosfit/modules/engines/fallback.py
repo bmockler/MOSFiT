@@ -564,18 +564,24 @@ class Fallback(Engine):
         lengthpretimes = len(np.where(self._times < time[0])[0])
         lengthposttimes = len(np.where(self._times > time[-1])[0])
 
-        # this removes all extrapolation by interp1d by setting dmdtnew = 0
-        # outside bounds of self._times
-        dmdt1 = np.zeros(lengthpretimes)
-        dmdt3 = np.zeros(lengthposttimes)
+
         # include len(self._times) instead of just using -lengthposttimes
         # for indexing in case lengthposttimes == 0
         dmdt2 = timeinterpfunc(self._times[lengthpretimes:(len(self._times) -
                                                            lengthposttimes)])
+
+        # this removes all extrapolation by interp1d by setting dmdtnew = 0
+        # outside bounds of self._times
+        dmdt1 = np.zeros(lengthpretimes) #np.ones(lengthpretimes)*1e-4*dmdt2[0] #
+        dmdt3 = np.zeros(lengthposttimes) #np.ones(lengthposttimes)*1e-4*dmdt2[0] #
+        #print(dmdt1)
+        #print(dmdt3)
+
+
         dmdtnew = np.append(dmdt1, dmdt2)
         dmdtnew = np.append(dmdtnew, dmdt3)
 
-        dmdtnew[dmdtnew < 0] = 0  # set floor for dmdt
+        dmdtnew[dmdtnew < 0] = 0 # set floor for dmdt
 
         self._efficiency = kwargs['efficiency']
         # luminosities in erg/s
@@ -595,6 +601,7 @@ class Fallback(Engine):
         #    luminosities)
         self._Leddlim = kwargs['Leddlim']  # user defined multiple of Ledd
         luminosities = (luminosities * self._Leddlim*Ledd / (luminosities + self._Leddlim*Ledd))
+        luminosities = [0.0 if np.isnan(x) else x for x in luminosities]
 
         return {'dense_luminosities': luminosities, 'Rstar': Rstar,
                 'tpeak': tpeak, 'beta': self._beta, 'starmass': self._Mstar,
