@@ -10,6 +10,10 @@ class TDEConstraints(Constraint):
 
     1. rp > rs --> the pericenter radius must be greater than the Schwarzschild
     radius or the bh will swallow the star whole (no disruption or flare)
+
+    2. rphot < max photosphere. max photosphere size determined either by 
+    apocenter of orbit of debris (old default) or by a relativistic wind 
+    launched at tfallback (current default)
     """
 
     def __init__(self, **kwargs):
