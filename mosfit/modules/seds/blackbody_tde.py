@@ -32,10 +32,14 @@ class Blackbody(SED):
         self._frequencies = kwargs['all_frequencies']
         self._radius_phot = kwargs[self.key('radiusphot')]
         self._temperature_phot = kwargs[self.key('temperaturephot')]
-        self._include_latetime_luminosity = kwargs[self.key('latetimlum')]
-        if self._include_latetime_luminosity:
-            self._latetime_luminosity_fraction = kwargs[self.key('latetime_luminosityfraction')]  # this is a constant value over the lc
+        #self._include_latetime_luminosity = kwargs[self.key('latetimlum')]
+        self._latetime_luminosity_fraction = kwargs[self.key('latetime_luminosityfraction')]  # this is a constant value over the lc
+        if self._latetime_luminosity_fraction>0: #self._include_latetime_luminosity:
+            #self._latetime_luminosity_fraction = kwargs[self.key('latetime_luminosityfraction')]  # this is a constant value over the lc
+            self._include_latetime_luminosity = True
             self._latetime_temperature = kwargs[self.key('latetime_temperature')]  # this is a constant value over the lc
+        else: 
+            self._include_latetime_luminosity = False
         xc = self.X_CONST  # noqa: F841
         fc = self.FLUX_CONST  # noqa: F841
         cc = self.C_CONST
