@@ -32,14 +32,10 @@ class Blackbody(SED):
         self._frequencies = kwargs['all_frequencies']
         self._radius_phot = kwargs[self.key('radiusphot')]
         self._temperature_phot = kwargs[self.key('temperaturephot')]
-        #self._include_latetime_luminosity = kwargs[self.key('latetimlum')]
+        self._include_latetime_luminosity = kwargs[self.key('include_latetime_luminosity')]
         self._latetime_luminosity_fraction = kwargs[self.key('latetime_luminosityfraction')]  # this is a constant value over the lc
-        if self._latetime_luminosity_fraction>0: #self._include_latetime_luminosity:
-            #self._latetime_luminosity_fraction = kwargs[self.key('latetime_luminosityfraction')]  # this is a constant value over the lc
-            self._include_latetime_luminosity = True
+        if self._include_latetime_luminosity: 
             self._latetime_temperature = kwargs[self.key('latetime_temperature')]  # this is a constant value over the lc
-        else: 
-            self._include_latetime_luminosity = False
         xc = self.X_CONST  # noqa: F841
         fc = self.FLUX_CONST  # noqa: F841
         cc = self.C_CONST
@@ -68,6 +64,8 @@ class Blackbody(SED):
             # R = ( L/(T^4 * stefconst) )^(1/2)
 
             latetime_radiusphot = np.sqrt(latetime_luminosity/ latetime_temperature**4 /self.STEF_CONST)
+        else:
+            latetime_luminosity = 0 # this is set so that latetime_luminosity can easily be saved by default
 
         seds = []
         rest_wavs_dict = {}
@@ -123,4 +121,4 @@ class Blackbody(SED):
         seds = self.add_to_existing_seds(seds, **kwargs)
 
         # Units of `seds` is ergs / s / Angstrom.
-        return {'sample_wavelengths': self._sample_wavelengths, 'seds': seds}
+        return {'sample_wavelengths': self._sample_wavelengths, 'seds': seds, 'latetime_luminosity':latetime_luminosity}
