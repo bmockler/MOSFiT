@@ -18,7 +18,7 @@
         "max_value":2.0
     },
     "bhmass":{
-        "min_value":5.0e4,
+        "min_value":5.0e3,
         "max_value":5.0e8,
         "log":true
     },
@@ -28,7 +28,7 @@
         "log":true
     },
     "texplosion":{
-        "min_value":-500.0,
+        "min_value":-300.0,
         "max_value":0.0
     },
     "variance":{
@@ -38,7 +38,7 @@
     },
     "lphoto":{
         "min_value":0.0,
-        "max_value":2.0
+        "max_value":3.0
     },
     "Rph0":{
         "min_value":1.0e-4,
@@ -47,11 +47,11 @@
     },
     "latetime_luminosityfraction":{
         "min_value":1.0e-4,
-        "max_value":1.0e-1,
+        "max_value":2.0e-1,
         "log":true
     },
     "latetime_temperature":{
-        "min_value":5.0e3,
+        "min_value":1.0e3,
         "max_value":5.0e5,
         "log":true
     },

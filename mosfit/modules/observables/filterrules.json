@@ -966,19 +966,37 @@
 			"U": {
 				"SVO": "Swift/UVOT.U"
 			},
+			"u": {
+				"SVO": "Swift/UVOT.U"
+			},
 			"B": {
+				"SVO": "Swift/UVOT.B"
+			},
+			"b": {
 				"SVO": "Swift/UVOT.B"
 			},
 			"V": {
 				"SVO": "Swift/UVOT.V"
 			},
+			"v": {
+				"SVO": "Swift/UVOT.V"
+			},
 			"UVW1": {
+				"SVO": "Swift/UVOT.UVW1"
+			},
+			"uvw1": {
 				"SVO": "Swift/UVOT.UVW1"
 			},
 			"UVW2": {
 				"SVO": "Swift/UVOT.UVW2"
 			},
+			"uvw2": {
+				"SVO": "Swift/UVOT.UVW2"
+			},
 			"UVM2": {
+				"SVO": "Swift/UVOT.UVM2"
+			},
+			"uvm2": {
 				"SVO": "Swift/UVOT.UVM2"
 			},
 			"W1": {
@@ -1011,40 +1029,49 @@
 		],
 		"filters": {
 			"U": {
-				"SVO": "Swift/UVOT.U",
-				"offset": 0
+				"SVO": "Swift/UVOT.U"
+			},
+			"u": {
+				"SVO": "Swift/UVOT.U"
 			},
 			"B": {
-				"SVO": "Swift/UVOT.B",
-				"offset": 0
+				"SVO": "Swift/UVOT.B"
+			},
+			"b": {
+				"SVO": "Swift/UVOT.B"
 			},
 			"V": {
-				"SVO": "Swift/UVOT.V",
-				"offset": 0
+				"SVO": "Swift/UVOT.V"
+			},
+			"v": {
+				"SVO": "Swift/UVOT.V"
 			},
 			"UVW1": {
-				"SVO": "Swift/UVOT.UVW1",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVW1"
+			},
+			"uvw1": {
+				"SVO": "Swift/UVOT.UVW1"
 			},
 			"UVW2": {
-				"SVO": "Swift/UVOT.UVW2",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVW2"
+			},
+			"uvw2": {
+				"SVO": "Swift/UVOT.UVW2"
 			},
 			"UVM2": {
-				"SVO": "Swift/UVOT.UVM2",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVM2"
+			},
+			"uvm2": {
+				"SVO": "Swift/UVOT.UVM2"
 			},
 			"W1": {
-				"SVO": "Swift/UVOT.UVW1",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVW1"
 			},
 			"W2": {
-				"SVO": "Swift/UVOT.UVW2",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVW2"
 			},
 			"M2": {
-				"SVO": "Swift/UVOT.UVM2",
-				"offset": 0
+				"SVO": "Swift/UVOT.UVM2"
 			}
 		}
 	},
@@ -2449,7 +2476,8 @@
 	{
 		"telescopes": [
 			"Palomar",
-			"P48"
+			"P48",
+			"ZTF"
 		],
 		"systems": [
 			"AB",
@@ -2458,6 +2486,7 @@
 		"instruments": [
 			"",
 			"ZTF",
+			"ztf",
 			"ZTF-Cam",
 			"P48+ZTF"
 		],
@@ -2624,6 +2653,40 @@
 				"offset": 0
 			}
 		}
+	},
+	{
+		"telescopes": [
+			"WISE",
+			"wise"
+		],
+		"systems": [
+			"AB",
+			""
+		],
+		"instruments": [
+			"",
+			"WISE",
+			"wise"
+		],
+		"filters": {
+			"W1":{
+				"SVO": "WISE/WISE.W1",
+				"offset": 0
+			},
+			"W2":{
+				"SVO": "WISE/WISE.W2",
+				"offset": 0
+			},
+			"W3":{
+				"SVO": "WISE/WISE.W3",
+				"offset": 0
+			},
+			"W4":{
+				"SVO": "WISE/WISE.W4",
+				"offset": 0
+			}
+		}
+		
 	}
 
 ]
